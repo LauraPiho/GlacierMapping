@@ -1,0 +1,15 @@
+IHMM is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License (GPL) as published by the Free Software
+Foundation; either version 2, or (at your option) any later version.
+
+IHMM is distributed in the hope that it will be useful, but without any
+warranty; without even the implied warranty of merchantability or fitness for a
+particular purpose. See the GNU General Public License for more details.
+
+If you don't know what this means then write to the Free Software Foundation,
+Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA or take a look at
+http://www.gnu.org/licenses/.
+
+
+--
+IHMM Toolbox, $Revision: 1.1 $, $Date: 2010-02-10 09:17:54 $

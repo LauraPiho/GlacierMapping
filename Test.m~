@@ -1,0 +1,155 @@
+% %function [RotatedData] = InputDataNoGPS()
+clear all
+clc
+
+load('/media/laura/Backup Plus/Laura/Documents06012021/TalTechRobotics/Glaciers_Tracking/Data_Sets/Glaciers/DataAll0507.mat' )
+% % 
+
+% DataDown{2} = DataDown{2}(1:62350,:);
+% DataDown{3} = DataDown{3}(1:39650,:);
+% DataDown{4} = DataDown{4}(3700:52120,:);
+% DataDown{5} = DataDown{5}(1:62350,:);
+% DataDown{6} = DataDown{6}(1:52170,:);
+% DataDown{7} = DataDown{7}(15700:43940,:);
+% DataDown{8} = DataDown{8}(14100:73640,:);
+% DataDown{9} = DataDown{9}(13780:55510,:);
+% DataDown{10} = DataDown{10}(13300:58630,:);
+% DataDown{11} = DataDown{11}(15240:57940,:);
+% DataDown{12} = DataDown{12}(4819:46980,:);
+% DataDown{13} = DataDown{13}(12750:56800,:);
+% DataDown{14} = DataDown{14}(12310:63670,:);
+% DataDown{15} = DataDown{15}(17820:45280,:);
+% DataDown{16} = DataDown{16}(4000:49100,:);
+% DataDown{17} = DataDown{17}(14420:88290,:);
+% DataDown{18} = DataDown{18}(1:75740,:);
+% DataDown{19} = DataDown{19}(2620:74220,:);
+% DataDown{20} = DataDown{20}(18100:57530,:);
+% DataDown{21} = DataDown{21}(21660:46330,:);
+% DataDown{22} = DataDown{22}(4800:155200,:);
+
+
+%DataDown{3} = DataDown{3}(1:end-5000,:);
+DataDown{4} = DataDown{4}(1000:end-16000,:);
+%DataDown{6} = DataDown{6}(1:end-16500,:);
+DataDown{7} = DataDown{7}(1:end-30500,:);
+%DataDown{8} = DataDown{8}(1:end,:);
+DataDown{9} = DataDown{9}(8000:end-17500,:);
+DataDown{10} = DataDown{10}(1000:end-45500,:);
+DataDown{13} = DataDown{13}(1:end-16500,:);
+DataDown{14} = DataDown{14}(12000:end-14000,:);
+DataDown{16} = DataDown{16}(6000:end,:);
+DataDown{20} = DataDown{20}(1:end,:);
+
+% % % 
+% % % % % 
+% % % % % %
+% % % % % % % % % % %
+i = [1:2,5,8,11,12,15,17,18:19,21,22];
+% % % % % % % % % % % % % %     ik = find(abs(gradient(mean(filloutliers(zscore(DataDown{i}(1:end,18:20)),'center'),2)))<0.001);
+% % % % % % % % % % % % % %     DataDown{i}(ik,:)=[];
+DataDown(i) = [];
+% % i = [10,11];4
+% % % % % %     ik = find(abs(gradient(mean(filloutliers(zscore(DataDown{i}(1:end,18:20)),'center'),2)))<0.001);
+% % % % % %     DataDown{i}(ik,:)=[];
+% DataDown(i) = [];
+% DataDown{3} = DataDown{3}(4000:end-14000,:);
+% 
+% DataDown{1} = DataDown{1}(1:48470,:);
+
+% % %
+[~,S] = size(DataDown);
+% S = 9;
+
+for i = 1:S
+    
+    % get data from the datafile
+    [Q_wxyz, E, E1, VarXYZ, MagVarXYZ] = GetData(DataDown , i);
+    
+    % correct uncalibrated magnetometer data
+    
+    mag = MagVarXYZ( : , [1 , 2 , 3]);
+    M1{i} = mag;
+    [A , b] = magcal(mag);
+    magx_correction = b(1);
+    magy_correction = b(2);
+    magz_correction = b(3);
+    MagVarXYZ = [(mag( : , 1) - magx_correction) , (mag( : , 2) - magy_correction) , (mag( : , 3) - magz_correction)] * A;
+    
+    % Signal noise removal and processing
+    
+    [VarXYZ, MagVarXYZ] = ProcessSignalData(VarXYZ,MagVarXYZ);
+    
+    % recalculate yaw angel
+    
+    q = ecompass(VarXYZ( : ,1:3),...
+        MagVarXYZ( : ,1:3),'quaternion','ReferenceFrame','NED');
+    e1 = euler( q , 'ZYX' ,'frame');
+    e1(:,2:3) = E1(:,2:3);
+    
+    Q_wxyz = eul2quat(e1(:,[1,2,3]),'ZYX');
+    Q_wxyz = quaternion(Q_wxyz);
+    count1 = 0;
+
+    % rotate the IMU signal
+    RotatedData{i} = rotatepoint(Q_wxyz , VarXYZ( : , [ 1 , 2 , 3 ]));%-((rotatepoint((Q_wxyz{i}),(VarXYZ{i}(:,1:3)))));
+    RotatedData{i}( : , 7 : 9) = rotatepoint(Q_wxyz , MagVarXYZ( : , [ 1 , 2 , 3 ])) ;
+    RotatedData{i}( : , 4 : 6) = rotatepoint(Q_wxyz , VarXYZ( : , [ 4 , 5 , 6 ])) ;
+
+    % post-process the rotated signal
+    for j  = 1:9
+        RotatedData1{i}( : , j) = smoothdata(RotatedData{i}( : , j) , 'movmean',100);
+
+        RotatedData1{i}( : , j) = filloutliers(RotatedData1{i}( : , j) , 'center' , 'median' , 'ThresholdFactor' , 3);
+    end
+end
+% Downsample for fatser processing
+
+for i = 1:S
+    
+    Try{i} = downsample(RotatedData1{i}( : , : ) , 5);
+    Try{i} = (Try{i}(:,:));
+    
+end
+
+
+
+for i = 1:S
+    for j = 1%:50
+    EVA{1}{i}(:,j) = Try{i}(1 : end , 1);
+    EVA{2}{i}(:,j) = Try{i}(1 : end , 2);
+    EVA{3}{i}(:,j) = Try{i}(1 : end , 3);
+    end
+end
+
+
+%The number of itterations can be changed 
+% 
+% for dim = 1:2
+%     
+%     [Est_vel_all , M , State , stats] = iHMM_Gibbs_Velocity_min_feat_frame(Try(1) , dim , 5000);
+%     EVA{dim} = Est_vel_all;
+%     S_n{dim} = State;
+%     M_All{dim} = M;
+%     Stats{dim} = stats;
+%     save('DataAll2020Summer.mat','EVA')
+%     
+% end
+
+% % %
+
+close all
+clear X_norm Y_norm Z_norm
+clear X_all Y_all Z_all N NG
+close all
+clear X_norm Y_norm Z_norm
+clear X_all Y_all Z_all N NG
+clear N XXX YYY p l
+
+[~ , S] = size(Try);
+
+% S = 1;
+
+for i = 1:S
+    
+     [XX, YY] = PathEstimationFromFeatures(EVA, DataDown, i);
+end

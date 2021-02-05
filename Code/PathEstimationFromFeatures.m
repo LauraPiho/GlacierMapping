@@ -86,18 +86,18 @@ for j = 1:S
 end
 
 figure
-for p = 1:S
-    hold on
-    %plot((Z_all{j}(:,p)))
-    [l , la , ~] = ned2geodetic((X_all(:,p)),(Y_all(:,p)),(Z_all(:,p)), lat0,long0,alt0,wgs);
-    [x,y,~] = deg2utm(l,la);
-    XXX(:,p) = x;
-    YYY(:,p) = y;
-    p1 = plot(x,y,'k');
-    p1.Color(4) = 0.1;
-    %hold on
-    
-end
+% for p = 1:S
+%     hold on
+%     %plot((Z_all{j}(:,p)))
+%     [l , la , ~] = ned2geodetic((X_all(:,p)),(Y_all(:,p)),(Z_all(:,p)), lat0,long0,alt0,wgs);
+%     [x,y,~] = deg2utm(l,la);
+%     XXX(:,p) = x;
+%     YYY(:,p) = y;
+%     p1 = plot(x,y,'k');
+%     p1.Color(4) = 0.1;
+%     %hold on
+%     
+% end
 
 erx = (std(X_all'))';
 ery = (std(Y_all'))';
@@ -118,7 +118,7 @@ p1 = plot(x,y,'r');
 XX = x;
 YY = y;
 
-scatter(x,y,5,smoothdata(detrend(downsample(DataDown{i}(:,4),5),10),500))
+scatter(x,y,5,smoothdata(detrend(downsample(DataDown(:,4),5),10),500))
 colormap(jet)
 %     clim = [min(Pressure),max(Pressure)];
 %     scalingIntensity = 5;
@@ -145,9 +145,9 @@ errorbar(560856, 8760624,err,'both')
 readtable('Englacial_UTM19082020_V2.txt');
 A = table2array(ans);
 A = table2array(ans);
-XX = A(:,1);
-YY = A(:,2);
-p2 = plot(XX,YY,'r')
+XX1 = A(:,1);
+YY1 = A(:,2);
+p2 = plot(XX1,YY1,'r');
 
 gpxread('Englacial_River.gpx');
 hold on

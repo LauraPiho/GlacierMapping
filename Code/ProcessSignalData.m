@@ -2,7 +2,7 @@ function [VarXYZ, MagVarXYZ] = ProcessSignalData(VarXYZ,MagVarXYZ)
 
 
 [itp , ~] = findchangepts([VarXYZ( : , 1 : 3) ]' ,...
-        'MaxNumChanges' , 300 ,'Statistic','linear', 'MinDistance',200);
+        'MaxNumChanges' , 180 ,'Statistic','mean', 'MinDistance',20);
     
     itp(end + 1) = numel(VarXYZ( : , 1));
     
@@ -12,20 +12,20 @@ function [VarXYZ, MagVarXYZ] = ProcessSignalData(VarXYZ,MagVarXYZ)
         
         for pp = 1 : 3
             
-            if abs(mean(std(VarXYZ(count : itp(p) , pp)))) < 1.5
+            if abs(mean(std(VarXYZ(count : itp(p) , pp)))) < 4
                 q = 2;
-            elseif abs(mean(std(VarXYZ(count : itp(p) , pp))))>= 1.5
+            elseif abs(mean(std(VarXYZ(count : itp(p) , pp))))>= 4
                 q = 1;
             end
         
      
-            VarXYZ(count : itp(p) , pp) = sgolayfilt(VarXYZ(count : itp(p) , pp) , 1 , 31 );
-            MagVarXYZ(count : itp(p) , pp) = sgolayfilt(MagVarXYZ(count : itp(p) , pp) , 1 , 31 );  
+            VarXYZ(count : itp(p) , pp) = sgolayfilt(VarXYZ(count : itp(p) , pp) , 1 , 11 );
+            MagVarXYZ(count : itp(p) , pp) = sgolayfilt(MagVarXYZ(count : itp(p) , pp) , 1 , 11 );  
 
             VarXYZ(count : itp(p) , pp) = filloutliers(VarXYZ(count : itp(p) , pp) ...
-                , 'center' , 'median' , 'ThresholdFactor' , q);
+                , 'center' , 'mean' , 'ThresholdFactor' , q);
             MagVarXYZ(count : itp(p) , pp) = filloutliers(MagVarXYZ(count : itp(p) , pp) ...
-                , 'center' , 'median' , 'ThresholdFactor' , q);       
+                , 'center' , 'mean' , 'ThresholdFactor' , q);       
         %             MagVarXYZ(count : itp(p) , pp) = sgolayfilt(MagVarXYZ(count : itp(p) , pp) , 1 , 31 );  
 
 %                      

@@ -23,12 +23,12 @@ for i = 1:nr_trials
     % Sample states using the iHmm Gibbs sampler.
     
     tic
-    hypers.alpha0_a = 2;
+    hypers.alpha0_a = 1;
     hypers.alpha0_b = 2;
-    hypers.gamma_a = 2;
-    hypers.gamma_b = 2;
+    hypers.gamma_a = 1;
+    hypers.gamma_b = 1;
     hypers.sigma2 = 2;
-    hypers.mu_0 = 2;
+    hypers.mu_0 = 1;
     hypers.sigma2_0 = 2;
     
     % yt = ones(T,1);
@@ -136,3 +136,4 @@ for i = 1:nr_trials
     %M2{i} = mean(Est_dis_all{i}');
     
 end
+close all

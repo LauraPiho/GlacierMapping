@@ -14,7 +14,7 @@ for k = 1:S
 end
     
 
-[m, ~, ~, ~, ~] = wrldmagm(109 , 78.2232, 15.6267, decyear(2019,7,5),'2015');
+[m, ~, ~, ~, ~] = wrldmagm(109 , 78.2232, 15.6267, decyear(2019,7,5),'2015v2');
 
 a = [ 0 0 -9.82];
 q = ecompass(a,m','quaternion','ReferenceFrame','ENU' );
@@ -35,7 +35,7 @@ long0 = 11.6267;
 alt0 = 109;
 wgs = wgs84Ellipsoid;
 
-A1 = readtable('/media/laura/Backup Plus/Laura/Downloads06012021/Supraglacial2011_mapped.csv');
+A1 = readtable('/home/laura/Documents/Projects/00_Glaciers/Glaciers/GlacierMapping/EnglacialData/Supraglacial2011_mapped.csv');
 A1 = flip(table2array(A1(:,7:8)));
 
 a1 = mean(A1(1:10,1));

@@ -18,13 +18,13 @@ function [VarXYZ, MagVarXYZ] = ProcessSignalData(VarXYZ,MagVarXYZ)
                 q = 2;
             end
             
-            VarXYZ(count : itp(p) , pp) = sgolayfilt(VarXYZ(count : itp(p) , pp) , 1 , 31 );
+            VarXYZ(count : itp(p) , pp) = sgolayfilt(VarXYZ(count : itp(p) , pp) , 1 , 81 );
             MagVarXYZ(count : itp(p) , pp) = sgolayfilt(MagVarXYZ(count : itp(p) , pp) , 1 , 91 );
             
             VarXYZ(count : itp(p) , pp) = filloutliers(VarXYZ(count : itp(p) , pp) ...
-                , 'center' , 'median' , 'ThresholdFactor' , q);
+                , 'nearest' , 'median' , 'ThresholdFactor' , q);
             MagVarXYZ(count : itp(p) , pp) = filloutliers(MagVarXYZ(count : itp(p) , pp) ...
-                , 'clip' , 'mean' , 'ThresholdFactor' , 2);       
+                , 'nearest' , 'mean' , 'ThresholdFactor' , 2);       
             %             MagVarXYZ(count : itp(p) , pp) = sgolayfilt(MagVarXYZ(count : itp(p) , pp) , 1 , 31 );  
             
         end

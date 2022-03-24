@@ -8,9 +8,9 @@ load('Data_Englacial.mat' )
 % EnglacialData{4} = EnglacialData{4}(2500:end,:);
 % % EnglacialData{1} = EnglacialData{1}(1:end-1800,:);
 % % % EnglacialData{6} = EnglacialData{6}(1:51410,:);
-% % EnglacialData{5} = EnglacialData{5}(1:end-4000,:);
+% EnglacialData{5} = EnglacialData{5}(1:end-4000,:);
 % 
-% EnglacialData{3} = EnglacialData{3}(1:end-5000,:);
+% EnglacialData{3} = EnglacialData{3}(1:end-7000,:);
 % EnglacialData{2} = EnglacialData{2}(1000:end-10000,:);
 
 % EnglacialData{6} = EnglacialData{6}(1:end-10000,:);
@@ -33,7 +33,7 @@ for i = 1:6
 %     %
     for dim = 1:2
         
-        [Est_vel_all , M , State , stats] = iHMM_Beam_Velocity_min_feat_frame(Try , dim , 2000);
+        [Est_vel_all , M , State , stats] = iHMM_Beam_Velocity_min_feat_frame(Try , dim , 5000);
         EVA{dim}{i} = Est_vel_all{1};
         S_n{dim} = State;
         M_All{dim} = M;

@@ -12,7 +12,7 @@ function [Est_vel_all , M , S_all , st] = iHMM_Beam_Velocity_min_feat_frame(RD_s
 [~,nr_trials] = size(RD_stretch2(:,:));
 
 for i = 1:nr_trials
-    Y = RD_stretch2{i}(:,[dim, dim+3, dim+6])'; 
+    Y = RD_stretch2{i}(:,[dim,dim+3,dim+6])'; 
     [~,m] = find(isnan(Y));
     Y(:,m) = [];
     Y1 = (RD_stretch2{i}(:,[dim]))';
@@ -83,7 +83,7 @@ for i = 1:nr_trials
                 RD22 = [RD2(count:j,1)];
                 [size_rd , ~] = size(RD22);
                 
-                while size_rd < 15
+                while size_rd < 5
                     if jj > n-1, break, end
                     jj=jj+1;
                     j =vert(jj);

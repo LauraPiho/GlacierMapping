@@ -2,7 +2,7 @@ function [VarXYZ, MagVarXYZ] = ProcessSignalData(VarXYZ,MagVarXYZ)
 
 
 [itp , ~] = findchangepts([VarXYZ( : , 1 : 2), MagVarXYZ( : , 1 : 2)]' ,...
-        'MaxNumChanges' , 130 ,'Statistic','linear', 'MinDistance', 590);
+        'MaxNumChanges' , 130 ,'Statistic','linear', 'MinDistance', 1590);
     
     itp(end + 1) = numel(VarXYZ( : , 1));
     
@@ -15,26 +15,26 @@ function [VarXYZ, MagVarXYZ] = ProcessSignalData(VarXYZ,MagVarXYZ)
             if abs(mean(std(VarXYZ(count : itp(p) , pp)))) < 3.5
                 q = 2;
             elseif abs(mean(std(VarXYZ(count : itp(p) , pp))))>= 3.5
-                q = 1;
+                q =1;
             end
             
+           
+            
             VarXYZ(count : itp(p) , pp) = filloutliers(VarXYZ(count : itp(p) , pp) ...
-                , 'nearest' , 'mean' , 'ThresholdFactor' , q);
+                , 'nearest' , 'median' , 'ThresholdFactor' , q);
             MagVarXYZ(count : itp(p) , pp) = filloutliers(MagVarXYZ(count : itp(p) , pp) ...
-                , 'nearest' , 'mean' , 'ThresholdFactor' ,2);       
+                , 'nearest' , 'mean' , 'ThresholdFactor' , 2);       
             %             MagVarXYZ(count : itp(p) , pp) = sgolayfilt(MagVarXYZ(count : itp(p) , pp) , 1 , 31 );  
-            VarXYZ(count : itp(p) , pp) = sgolayfilt(VarXYZ(count : itp(p) , pp) , 1 , 131 );
-            MagVarXYZ(count : itp(p) , pp) = sgolayfilt(MagVarXYZ(count : itp(p) , pp) , 1 , 131 );
-        
+             VarXYZ(count : itp(p) , pp) = sgolayfilt(VarXYZ(count : itp(p) , pp) , 1 , 61 );
+            MagVarXYZ(count : itp(p) , pp) = sgolayfilt(MagVarXYZ(count : itp(p) , pp) , 1 , 91 );
         end
         
         count = itp(p);
         
     end
     
-% %
-% %
-
+%     %
+%     
     count = 1;
     
     Temp1 = (VarXYZ(1 : end , 1 : 3));    

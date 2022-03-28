@@ -22,18 +22,19 @@ MagVarXYZ = [(mag( : , 1) - magx_correction) , (mag( : , 2) - magy_correction) ,
 
 % recalculate yaw angel
 
-q = ecompass(VarXYZ( : ,1:3),...
-    MagVarXYZ( : ,1:3),'quaternion','ReferenceFrame','NED');
-% fuse = complementaryFilter('SampleRate' , 100 , 'ReferenceFrame' , 'NED', 'HasMagnetometer',true,'AccelerometerGain', 0.2,'MagnetometerGain',0.01); % , 'HasMagnetometer' , false) ;
-% q = fuse(VarXYZ(:,1:3),VarXYZ(:,4:6), MagVarXYZ);
+% q = ecompass(VarXYZ( : ,1:3),...
+%     MagVarXYZ( : ,1:3),'quaternion','ReferenceFrame','NED');
+fuse = complementaryFilter('SampleRate' , 100 , 'ReferenceFrame' , 'NED', 'HasMagnetome); % , 'HasMagnetometer' , false) ;
+q = fuse(VarXYZ(:,1:3),VarXYZ(:,4:6));
 
 e1 = euler( q , 'ZYX' ,'frame');
 e1(:,2:3) = E1(:,2:3);
 
 Q_wxyz = eul2quat(e1(:,[1,2,3]),'ZYX');
-Q_wxyz = quaternion(Q_wxyz);    
-% count1 = 0;
-% Q_wxyz = q; %rotate the IMU signal
+Q_wxyz = quaternion(Q_wxyz);
+count1 = 0;
+% Q_wxyz = q;
+% rotate the IMU signal
 
 RotatedData = rotatepoint(Q_wxyz , VarXYZ( : , [ 1 , 2 , 3 ]));%-((rotatepoint((Q_wxyz{i}),(VarXYZ{i}(:,1:3)))));
 RotatedData( : , 7 : 9) = rotatepoint(Q_wxyz , MagVarXYZ( : , [ 1 , 2 , 3 ])) ;
@@ -43,7 +44,7 @@ RotatedData( : , 4 : 6) = rotatepoint(Q_wxyz , VarXYZ( : , [ 4 , 5 , 6 ])) ;
 
 for j  = 1:9
     
-    RotatedData1( : , j) = filloutliers(RotatedData( : , j) , 'nearest' , 'median' , 'ThresholdFactor' ,2);
+    RotatedData1( : , j) = filloutliers(RotatedData( : , j) , 'nearest' , 'median' , 'ThresholdFactor' ,3);
     RotatedData1( : , j) = smoothdata(RotatedData1( : , j) , 'movmean');
     
 end

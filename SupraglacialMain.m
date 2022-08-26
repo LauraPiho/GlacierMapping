@@ -2,21 +2,11 @@
 clear all
 clc
 
-%load('SupraglacialData/Data_Supraglacial.mat')
-% load('/home/laura/Downloads/Data_Supraglacial.mat')
-load('Tube_all_cut_02072019_2.mat')
-DataDown{6} = DataDown{6}(2000:end,:); 
-% % DataDown{7}(5800:8200,:)= []; 
-DataDown{8} = DataDown{8}(4000:end,:); 
-DataDown{9} = DataDown{9}(1000:end-1000,:);
-DataDown{4} = DataDown{4}(2000:end,:); 
-DataDown{5} = DataDown{5}(1000:end-1000,:); 
+load('SupraglacialData/Data_Supraglacial.mat')
 
-DataDown{10} = DataDown{10}(6500:end,:); 
-DataDown{11} = DataDown{11}(2780:end,:); 
-SupraglacialData = DataDown;
+
 [~,S] = size(SupraglacialData);
-% S = 1;
+S = 1;
 
 for i = 1:S
     
@@ -25,7 +15,7 @@ for i = 1:S
     % get data from the datafile
     [Q_wxyz, E, E1, VarXYZ, MagVarXYZ] = GetData(DataDown);
     
-    % correct uncalibrated magnetometer data
+    % deal with uncalibrated magnetometer data
     
     mag = MagVarXYZ( : , [1 , 2 , 3]);
     M1{i} = mag;
@@ -66,15 +56,15 @@ for i = 1:S
         V1(i,:) = [std(VarXYZ),std(MagVarXYZ)];
 
     if V(i,1) > 5.2
-        q = 1;
-    else
         q = 2;
+    else
+        q = 3;
 
     end
     
     for j  = 1:9
 
-        RotatedData1{i}( : , j) = smoothdata(RotatedData( : , j) , 'movmean');
+        RotatedData1{i}( : , j) = smoothdata(RotatedData( : , j) , 'movmedian',150);
 
         RotatedData1{i}( : , j) = filloutliers(RotatedData1{i}( : , j) , 'center' , 'median' , 'ThresholdFactor' , q);
 
@@ -102,7 +92,7 @@ end
 
 %
 % The number of itterations can be changed 
-% % % % % 
+% % % % % % 
 for dim = 1:2
 
     [Est_vel_all , M , State , stats] = iHMM_Beam_Velocity_min_feat_frame(Try , dim , 2000);

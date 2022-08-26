@@ -23,10 +23,10 @@ for i = 1:nr_trials
     % Sample states using the iHmm Gibbs sampler.
     
     tic
-    hypers.alpha0_a = 1;
+    hypers.alpha0_a = 0.3;
     hypers.alpha0_b = 2;
-    hypers.gamma_a = 1;
-    hypers.gamma_b = 1;
+    hypers.gamma_a = 0.1;
+    hypers.gamma_b = 0.1;
     hypers.sigma2 = 2;
     hypers.mu_0 = 1;
     hypers.sigma2_0 = 2;
@@ -83,7 +83,7 @@ for i = 1:nr_trials
                 RD22 = [RD2(count:j,1)];
                 [size_rd , ~] = size(RD22);
                 
-                while size_rd < 5
+                while size_rd < 25
                     if jj > n-1, break, end
                     jj=jj+1;
                     j =vert(jj);

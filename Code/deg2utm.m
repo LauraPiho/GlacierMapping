@@ -1,3 +1,5 @@
+% Rafael Palacios (2020). deg2utm (https://www.mathworks.com/matlabcentral/fileexchange/10915-deg2utm), MATLAB Central File Exchange. Retrieved February 21, 2020. 
+
 function  [x,y,utmzone] = deg2utm(Lat,Lon)
 % -------------------------------------------------------------------------
 % [x,y,utmzone] = deg2utm(Lat,Lon)

@@ -1,8 +1,8 @@
 function [RotatedData1, DataDown] = Load_Data(Englacial_data,i)
 
 % get data from the datafile
-DataDown = table2array(Englacial_data{i});
-% DataDown = Englacial_data{i};
+% DataDown = table2array(Englacial_data{i});
+DataDown = Englacial_data{i};
 
 [Q_wxyz, E, E1, VarXYZ, MagVarXYZ] = GetData(DataDown);
 
@@ -26,7 +26,7 @@ q = ecompass(VarXYZ( : ,1:3),...
     MagVarXYZ( : ,1:3),'quaternion','ReferenceFrame','NED');
 % fuse = complementaryFilter('SampleRate' , 100 , 'ReferenceFrame' , 'NED', 'HasMagnetometer',true,'AccelerometerGain', 0.2,'MagnetometerGain',0.01); % , 'HasMagnetometer' , false) ;
 % q = fuse(VarXYZ(:,1:3),VarXYZ(:,4:6), MagVarXYZ);
-
+% 
 e1 = euler( q , 'ZYX' ,'frame');
 e1(:,2:3) = E1(:,2:3);
 
@@ -41,10 +41,12 @@ RotatedData( : , 4 : 6) = rotatepoint(Q_wxyz , VarXYZ( : , [ 4 , 5 , 6 ])) ;
 
 % post-process the rotated signal
 
+S = 0;
 for j  = 1:9
     
-    RotatedData1( : , j) = filloutliers(RotatedData( : , j) , 'nearest' , 'median' , 'ThresholdFactor' ,2);
-    RotatedData1( : , j) = smoothdata(RotatedData1( : , j) , 'movmean');
-    
+%     RotatedData1( : , j) = filloutliers(RotatedData( : , j) , 'clip' , 'median' , 'ThresholdFactor' ,3);
+    RotatedData1( : , j) = smoothdata(RotatedData( : , j) , 'movmean', 100);
+    S = S+snr(RotatedData1( : , j));
 end
+S/9
 end

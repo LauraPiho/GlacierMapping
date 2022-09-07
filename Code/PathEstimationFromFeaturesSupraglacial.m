@@ -142,7 +142,7 @@ clim = [min(Pressure1),max(Pressure1)];
 scalingIntensity = 5;
 myColors = jet;
 
-[newMap, ticks, tickLabels] = MC_nonlinearCmap(myColors, 1001, clim, scalingIntensity,2);
+%[newMap, ticks, tickLabels] = MC_nonlinearCmap(myColors, 1001, clim, scalingIntensity,2);
 %     [l, la, h] = enu2geodetic(mean(X_all{j}(:,:),2),mean(Y_all{j}(:,:),2),mean(Z_all{j}(:,:),2), lat0,long0,alt0,wgs);
 %     [x,y,~] = deg2utm(l,la);
 %     p1 = plot(x,y,'r');

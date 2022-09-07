@@ -28,11 +28,11 @@ for i = 1:S
     % Signal noise removal and processing
     V(i,:) = [std(VarXYZ),std(MagVarXYZ)];
     if V(i,2)<3.5;
-        [VarXYZ, MagVarXYZ] = ProcessSignalData1(VarXYZ,MagVarXYZ, 1300, 1231);
+        [VarXYZ, MagVarXYZ] = ProcessSignalData1(VarXYZ,MagVarXYZ, 600, 131);
     elseif V(i,2)>3.5 && V(i,2)<3.8;
-        [VarXYZ, MagVarXYZ] = ProcessSignalData1(VarXYZ,MagVarXYZ, 1200, 631);
+        [VarXYZ, MagVarXYZ] = ProcessSignalData1(VarXYZ,MagVarXYZ, 500, 131);
     else V(i,2)>3.8;
-        [VarXYZ, MagVarXYZ] = ProcessSignalData1(VarXYZ,MagVarXYZ, 300, 231);
+        [VarXYZ, MagVarXYZ] = ProcessSignalData1(VarXYZ,MagVarXYZ, 400, 131);
     end
     % recalculate yaw angel
     
@@ -55,16 +55,16 @@ for i = 1:S
     % post-process the rotated signal
         V1(i,:) = [std(VarXYZ),std(MagVarXYZ)];
 
-    if V(i,1) > 5.2
-        q = 2;
+   if V(i,1) > 6
+        q = 1;
     else
-        q = 3;
+        q = 2;
 
     end
     
     for j  = 1:9
 
-        RotatedData1{i}( : , j) = smoothdata(RotatedData( : , j) , 'movmedian',150);
+        RotatedData1{i}( : , j) = smoothdata(RotatedData( : , j) , 'movmean', 50);
 
         RotatedData1{i}( : , j) = filloutliers(RotatedData1{i}( : , j) , 'center' , 'median' , 'ThresholdFactor' , q);
 
@@ -84,15 +84,17 @@ end
 
 for i = 1:S
     for k = 1:50
+
     EVA{1}{i}(:,k) = Try{i}(1 : end , 1);
     EVA{2}{i}(:,k) = Try{i}(1 : end , 2);
     EVA{3}{i}(:,k) = Try{i}(1 : end , 3);
+
     end
 end
 
 %
 % The number of itterations can be changed 
-% % % % % % 
+% % % % % % % 
 for dim = 1:2
 
     [Est_vel_all , M , State , stats] = iHMM_Beam_Velocity_min_feat_frame(Try , dim , 2000);
@@ -100,7 +102,6 @@ for dim = 1:2
     S_n{dim} = State;
     M_All{dim} = M;
     Stats{dim} = stats;
-%     save('DataAll2020Summer.mat','EVA')
 
 end
 
